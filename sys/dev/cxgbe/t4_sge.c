@@ -5578,8 +5578,7 @@ write_tnl_lso_cpl(void *cpl, struct mbuf *m0)
 	uint32_t ctrl;
 
 	KASSERT(m0->m_pkthdr.inner_l2hlen > 0 &&
-	    m0->m_pkthdr.inner_l3hlen > 0 && m0->m_pkthdr.inner_l4hlen > 0 &&
-	    m0->m_pkthdr.inner_l5hlen > 0,
+	    m0->m_pkthdr.inner_l3hlen > 0 && m0->m_pkthdr.inner_l4hlen > 0,
 	    ("%s: mbuf %p needs VXLAN_TSO but missing inner header lengths",
 		__func__, m0));
 	KASSERT(m0->m_pkthdr.l2hlen > 0 && m0->m_pkthdr.l3hlen > 0 &&
