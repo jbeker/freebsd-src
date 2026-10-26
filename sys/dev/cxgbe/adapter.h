@@ -1224,21 +1224,27 @@ hw_all_ok(struct adapter *sc)
 	return (__predict_true(not_ok == 0));
 }
 
+/*
+ * # of DMA segments stored in PH_loc.eight[5].  Note that this must not live in
+ * the l2hlen ... inner_l5hlen fields of the pkthdr, which alias rcv_tstmp.
+ * Writing those on the tx path corrupts the rx timestamp of a forwarded packet,
+ * which is still flagged M_TSTMP when eth_tx taps BPF.
+ */
 static inline int
 mbuf_nsegs(struct mbuf *m)
 {
 	M_ASSERTPKTHDR(m);
-	KASSERT(m->m_pkthdr.inner_l5hlen > 0,
+	KASSERT(m->m_pkthdr.PH_loc.eight[5] > 0,
 	    ("%s: mbuf %p missing information on # of segments.", __func__, m));
 
-	return (m->m_pkthdr.inner_l5hlen);
+	return (m->m_pkthdr.PH_loc.eight[5]);
 }
 
 static inline void
 set_mbuf_nsegs(struct mbuf *m, uint8_t nsegs)
 {
 	M_ASSERTPKTHDR(m);
-	m->m_pkthdr.inner_l5hlen = nsegs;
+	m->m_pkthdr.PH_loc.eight[5] = nsegs;
 }
 
 /* Internal mbuf flags stored in PH_loc.eight[1]. */
